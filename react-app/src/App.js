@@ -1,25 +1,30 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import {BrowserRouter, Switch, Route} from 'react-router-dom';
 import './App.css';
+import TaskList from './task/TaskList'
+import DoneTaskList from './task/DoneTaskList'
+import Header from './common/Header'
 
 class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      title: 'タスク一覧'  
+    }
+  }
+  
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+        <BrowserRouter>
+        <div>
+          <Header/>
+          <Switch>
+            <Route exact path={'/'} component={TaskList}/>
+            <Route path={'/donetask'} component={DoneTaskList}/>
+          </Switch>
+        </div>
+        </BrowserRouter>
       </div>
     );
   }
