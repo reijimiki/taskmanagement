@@ -22,11 +22,15 @@
   color: #61dafb;
 }
 
-.task--list__item {
+.task--list__items {
   text-align: center;
   width: 80%;
   margin-right: auto;
   margin-left: auto;
+}
+
+.task--list__item {
+  margin-bottom: 5px;
 }
 
 @keyframes App-logo-spin {
