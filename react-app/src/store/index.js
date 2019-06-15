@@ -1,30 +1,15 @@
-import { createStore, combineReducers } from 'redux'
+import { createStore, combineReducers, applyMiddleware } from 'redux'
+import thunk from 'redux-thunk'
+import axios from 'axios'
 
 /* Actionの実装 */
 
 const SET_TASK_LIST = 'setTaskList'
-const SET_DONE_TASK_LIST = 'seTdoneTaskList'
+const GET_TASK_LIST = 'getTaskList'
+const SET_DONE_TASK_LIST = 'setDoneTaskList'
 
 const initialTaskState = {
-  taskList: [{
-    taskId: '1',
-    taskName: 'テスト用タスク１',
-    genre: 'ジャンル１',
-    priority: 'high',
-    period_date: '2019/4/30'
-  },{
-    taskId: '2',
-    taskName: 'テスト用タスク2',
-    genre: 'ジャンル2',
-    priority: 'mid',
-    period_date: '2019/4/29'
-  },{
-    taskId: '3',
-    taskName: 'テスト用タスク3',
-    genre: 'ジャンル3',
-    priority: 'low',
-    period_date: '2019/5/1'
-  }],
+  taskList: [],
   doneTaskList: []
 }
 
@@ -39,6 +24,12 @@ export function setDoneTaskList(doneTaskList) {
   return {
     type: SET_DONE_TASK_LIST,
     doneTaskList: doneTaskList
+  }
+}
+
+export function getTaskList() {
+  return {
+    type: GET_TASK_LIST
   }
 }
 
@@ -67,6 +58,7 @@ export function setDoneTaskList(doneTaskList) {
 // }
 
 export function setHeaderTitle(title) {
+  // console.log('store の setHeaderTitle');
   return {
     type: 'title',
     headerTitle: title
@@ -74,9 +66,6 @@ export function setHeaderTitle(title) {
 }
 
 function commonStateReducer(state = {headerTitle: ''}, action) {
-  console.log('CommonState');
-  console.log('action[' + JSON.stringify(action.headerTitle) + ']');
-  console.log('state[' + JSON.stringify(state) + ']');
   switch (action.type) {
     case 'title':
       return {headerTitle: action.headerTitle}
@@ -84,16 +73,21 @@ function commonStateReducer(state = {headerTitle: ''}, action) {
       return state
   }
 }
-
 function taskInfoStateReducer(state = initialTaskState, action) {
-  console.log('taskInfoState');
-  console.log('action[' + JSON.stringify(action) + ']');
-  console.log('state[' + JSON.stringify(state) + ']');
+  // console.log('taskInfoState');
+  // console.log('state[' + JSON.stringify(state) + ']');
+  // console.log('actionType[' + action.type + ']');
   switch (action.type) {
     case SET_TASK_LIST:
-      return {taskList: action.taskList}
+      return {
+        taskList: action.taskList,
+        doneTaskList: state.doneTaskList
+      }
     case SET_DONE_TASK_LIST:
-        return {doneTaskList: action.doneTaskList}
+        return {
+          taskList: state.taskList,
+          doneTaskList: action.doneTaskList
+        }
     default:
       return state
   }
@@ -104,6 +98,20 @@ const reducers = combineReducers({
   taskInfo: taskInfoStateReducer
 });
 
+// middleware実装
+export const fetchTaskList = () => {
+  return (dispatch) => {
+    return axios.get(`http://localhost:8080/api/task/get`).then(results => {
+      console.log('results[' + JSON.stringify(results) + ']');
+      dispatch(setTaskList(results.data))
+    }).catch(err => {
+      console.error('error[' + err + ']')
+      // エラーの場合は空配列を設定
+      dispatch(setTaskList([]))
+    });
+  }
+}
+
 /* Storeの実装 */
 
 // 初期state変数（initialState）の作成
@@ -111,4 +119,4 @@ const reducers = combineReducers({
 //   headerTitle: 'aaaa'
 // };
 // createStore（）メソッドを使ってStoreの作成
-export const store = createStore(reducers);
+export const store = createStore(reducers, applyMiddleware(thunk));

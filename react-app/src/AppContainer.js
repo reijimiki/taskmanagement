@@ -1,6 +1,6 @@
 import ContainerComponet from './containerComponents'
-import { setHeaderTitle } from './store'
 import { connect } from 'react-redux';
+import {ActionClass} from './store/actions'
 
 // Connect to Redux
 function mapStateToProps(state) {
@@ -10,17 +10,10 @@ function mapStateToProps(state) {
     taskInfo: state.taskInfo
   };
 }
-function mapDispatchToProps(dispatch) { 
-  return {
-    // propsを通して取得する際に使う名前
-    setTitle(value) {
-      // Storeのdispatchメソッド（引数はAction Creator）
-      dispatch(setHeaderTitle(value));
-    }
-  };
-}
-
-
+// propsを通してどのようにアクションを呼び出すか決める
+const mapDispatchToProps = dispatch => {
+  return { actions: new ActionClass(dispatch) };
+};
 
 const AppContainer = connect(
   mapStateToProps,
