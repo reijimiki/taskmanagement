@@ -1,6 +1,7 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
 import axios from 'axios'
+import {addTaskReducer} from './addTask'
 
 /* Actionの実装 */
 
@@ -95,7 +96,8 @@ function taskInfoStateReducer(state = initialTaskState, action) {
 
 const reducers = combineReducers({
   common: commonStateReducer,
-  taskInfo: taskInfoStateReducer
+  taskInfo: taskInfoStateReducer,
+  addTask: addTaskReducer
 });
 
 // middleware実装

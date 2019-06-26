@@ -1,4 +1,5 @@
 import { setHeaderTitle, fetchTaskList } from './index.js'
+import { setInputData, registerTask } from './addTask'
 
 export class ActionClass {
   dispatch: (action: any) => any;
@@ -14,4 +15,12 @@ export class ActionClass {
   setTitle(value) {
     this.dispatch(setHeaderTitle(value));
   };
+
+  setPostData(inputData) {
+    this.dispatch(setInputData(inputData));
+  };
+
+  register(state): Promise<void> {
+    this.dispatch(registerTask(state));
+  }
 }

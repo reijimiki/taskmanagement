@@ -20,3 +20,14 @@
   width: 20%;
   text-align: center;
 }
+
+.add-task-table {
+  width: 100%;
+}
+
+.add-task-td-genre {
+  min-width: 120px !important;
+}
+.add-task-td-priority {
+  min-width: 120px !important;
+}

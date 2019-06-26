@@ -10,7 +10,7 @@ class TaskList extends Component {
     this.props.fetch();
   }
   handleToAboutPage = () => {
-    this.props.history.push('/donetask')
+    this.props.history.push('/addtask')
   }
   // scriptはこんな感じで追加できる
   handleToThisPage = () => {
@@ -20,7 +20,6 @@ class TaskList extends Component {
   render() {
     return (
       <div className="task-list-main">
-        タスク管理アプリのメイン画面
         <div className="task--list__items">
           <CardList list={this.props.taskInfo}/>
         </div>
