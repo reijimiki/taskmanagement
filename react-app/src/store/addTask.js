@@ -23,11 +23,8 @@ export function setInputData(inputData) {
 export function addTaskReducer(state = initialState, action) {
   switch (action.type) {
     case SET_INPUT_DATA:
-      console.log('setInputData だよ');
-      console.log(action.inputData);
       return action.inputData
     case GET_STATE:
-      console.log('getState だよ');
       console.log(state);
       return state
     default:

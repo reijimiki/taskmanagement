@@ -6,7 +6,6 @@ import Select from '@material-ui/core/Select';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import {DateLogic} from '../../logic/dateLogic'
 import {Validate} from '../../logic/validation'
 import {CONST} from '../../assets/const'
 import './../../task/task.css';
@@ -17,6 +16,8 @@ class TaskDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      taskId: '',
+      taskState: '',
       taskName:'',
       periodeDateYear: '',
       periodeDateMonth: '',
@@ -26,30 +27,24 @@ class TaskDetail extends Component {
       memo: ''
     }
   }
-  componentDidMount () {
+  async componentDidMount () {
     this.props.set('タスク詳細');
-    const date = DateLogic.getToday();
-    this.setState({
-      periodeDateYear: date.year,
-      periodeDateMonth: date.month,
-      periodeDateDay: date.day
-    });
+    await this.props.getTaskDetail(this.props.match.params.id);
+    this.setState(this.props.taskDetail);    
   }
 
-  handleRegisterTask = () => {
-    console.log('this.state [' + JSON.stringify(this.state) + ']');
-    this.props.setPostData(this.state);
+  handleUpdateTask = () => {
+    console.log('更新')
     errors = [];
     errors = Validate.reigster(this.state);
     if (errors.length !== 0) {
-      console.log('バリデーションエラーのため登録しません')
+      console.log('バリデーションエラーのため更新しません')
       console.log(errors);
-      alert(errors);
+      alert(JSON.stringify(errors));
       return
     }
-    console.log('登録処理開始')
-    this.props.register(this.state);
-    // this.props.history.push('/')
+    console.log('更新処理開始');
+    this.props.update(this.state);
   }
   handleToTaskList = () => {
     this.props.history.push('/')
@@ -140,10 +135,10 @@ class TaskDetail extends Component {
             </tr>
           </tbody>
         </table>
-        <Button variant="contained" color="primary" onClick={this.handleRegisterTask}>
+        <Button variant="contained" color="primary" onClick={this.handleUpdateTask}>
           更新
         </Button>
-        <Button variant="contained" color="primary" onClick={this.handleRegisterTask}>
+        <Button variant="contained" color="primary" onClick={this.handleToTaskList}>
           完了
         </Button>
         <Button variant="contained" color="primary" onClick={this.handleToTaskList}>

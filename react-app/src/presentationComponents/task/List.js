@@ -13,7 +13,7 @@ class TaskList extends Component {
     this.props.history.push('/addtask')
   }
   // scriptはこんな感じで追加できる
-  handleToThisPage = () => {
+  handleToDoneTaskPage = () => {
     this.props.history.push('/donetask')
   }
 
@@ -26,6 +26,9 @@ class TaskList extends Component {
         <div>
           <Button variant="contained" color="primary" onClick={this.handleToAboutPage}>
             タスク追加
+          </Button>
+          <Button variant="contained" color="primary" onClick={this.handleToDoneTaskPage}>
+            完了タスク一覧
           </Button>
         </div>
       </div>

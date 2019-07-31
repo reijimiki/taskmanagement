@@ -5,8 +5,6 @@ import CardContent from '@material-ui/core/CardContent'
 import {DateLogic} from '../logic/dateLogic'
 
 class TaskItems extends Component {
-  async componentDidUpdate () {
-  }
   handleToThisPage = (taskId) => {
     this.props.history.push('/taskdetail/' + taskId);
   }
@@ -24,7 +22,7 @@ class TaskItems extends Component {
             <div>タスク名：{task.taskName}</div>
             <div>ジャンル：{task.genre}</div>
             <div>優先度：{task.priority}</div>
-            <div>期限：{DateLogic.formatDate(task.periodeDate)}</div>
+            <div>期限：{DateLogic.formatDate(task.periodDate)}</div>
           </CardContent>
         </Card>
         </div>

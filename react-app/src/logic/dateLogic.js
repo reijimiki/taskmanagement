@@ -10,9 +10,29 @@ export var DateLogic = {
     };
     return date
   },
+  splitPeriodDate (date) {
+    try {
+      let m = moment(date, "YYYY/MM/DD hh:mm:ss");
+      m.add(9, 'h');
+      m.format("YYYY年MM月DD日");
+      return {
+        year: m.year(),
+        month: m.month()+1,
+        day: m.date()
+      };
+    } catch (err) {
+      console.error(err)
+      return {
+        year: '',
+        month: '',
+        day: ''
+      };
+    }
+  },
   formatDate (date) {
-    const formatedDate = moment(date).format("YYYY年MM月DD日")
-    return formatedDate
+    let m = moment(date);
+    m.add(9, 'h');
+    return m.format("YYYY年MM月DD日");
   },
   isValidDate (year, month, day) {
     if (!year || !month || !day) {

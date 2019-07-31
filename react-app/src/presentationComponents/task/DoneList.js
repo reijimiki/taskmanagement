@@ -13,7 +13,9 @@ class DoneTaskList extends Component {
   render() {
     return (
       <div className="done-task-list-main">
-        Doneタスク画面
+        <div className="task--list__items">
+          <CardList list={this.props.doneTaskInfo}/>
+        </div>
         <div>
           <Button variant="contained" color="secondary" onClick={this.handleToAboutPage}>
             タスク一覧画面へ遷移する

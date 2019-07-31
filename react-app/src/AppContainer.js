@@ -7,7 +7,8 @@ function mapStateToProps(state) {
   return {
     // propsを通して取得する際に使う名前: Storeのstateの値
     title: state.common.headerTitle,
-    taskInfo: state.taskInfo
+    taskInfo: state.taskInfo,
+    taskDetail: state.taskDetail
   };
 }
 // propsを通してどのようにアクションを呼び出すか決める
