@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import Button from '@material-ui/core/Button';
-import CardList from './../listCard.js'
+import CardList from './../listCard.js';
 import './../../task/task.css';
 
 class TaskList extends Component {
@@ -21,7 +21,7 @@ class TaskList extends Component {
     return (
       <div className="task-list-main">
         <div className="task--list__items">
-          <CardList list={this.props.taskInfo}/>
+          <CardList list={this.props.taskInfo.taskList}/>
         </div>
         <div>
           <Button variant="contained" color="primary" onClick={this.handleToAboutPage}>

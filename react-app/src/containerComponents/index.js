@@ -18,7 +18,7 @@ class ContainerComponet extends Component {
             <Route exact path={'/'} render={() => <TaskList taskInfo={this.props.taskInfo} set={value => this.props.actions.setTitle(value)}  fetch={() => this.props.actions.fetchTask()}/>} />
             <Route exact path={'/addtask'} render={props => <AddTask {...props} set={value => this.props.actions.setTitle(value)} setPostData={postData => this.props.actions.setPostData(postData)} register={(state) => this.props.actions.register(state)}/>}/>
             <Route exact path={'/taskdetail/:id'} render={props => <TaskDetail taskDetail={this.props.taskDetail} {...props} set={value => this.props.actions.setTitle(value)} getTaskDetail={taskId => this.props.actions.getTaskById(taskId)} update={async (state) => await this.props.actions.update(state)} setDetail={(detail) => this.props.actions.setDetail(detail)}/>}/>
-            <Route exact path={'/donetask'} render={props => <DoneTaskList {...props} set={value => this.props.actions.setTitle(value)}/>}/>
+            <Route exact path={'/donetask'} render={props => <DoneTaskList {...props} taskInfo={this.props.taskInfo} set={value => this.props.actions.setTitle(value)} fetch={() => this.props.actions.fetchDoneTask()}/>} />
           </Switch>
         </div>
         </BrowserRouter>

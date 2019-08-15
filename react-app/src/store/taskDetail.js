@@ -54,7 +54,7 @@ export const getTaskDetailById = (taskId) => {
 }
 
 export const updateDetailById = (state) => {
-  return dispatch => {
+  return () => {
     console.log(state);
     return axios.put('http://localhost:8080/api/task/put', state).then(results => {
       return true
@@ -64,4 +64,3 @@ export const updateDetailById = (state) => {
     })
   }
 }
-

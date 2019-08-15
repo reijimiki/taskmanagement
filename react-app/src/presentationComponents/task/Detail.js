@@ -34,7 +34,6 @@ class TaskDetail extends Component {
   }
 
   handleUpdateTask = () => {
-    console.log('更新')
     errors = [];
     errors = Validate.reigster(this.state);
     if (errors.length !== 0) {
@@ -43,9 +42,45 @@ class TaskDetail extends Component {
       alert(JSON.stringify(errors));
       return
     }
-    console.log('更新処理開始');
     this.props.update(this.state);
   }
+
+  toDoneState = async () =>{
+    console.log('タスク完了')
+
+    // stateを変更
+    await this.setState({taskState: 9});
+
+    errors = [];
+    errors = Validate.reigster(this.state);
+    if (errors.length !== 0) {
+      console.log('バリデーションエラーのため更新しません')
+      console.log(errors);
+      alert(JSON.stringify(errors));
+      return
+    }
+    console.log('完了処理開始');
+    this.props.update(this.state);
+  }
+
+  toDoState = async () =>{
+    console.log('タスク完了')
+
+    // stateを変更
+    await this.setState({taskState: 0});
+
+    errors = [];
+    errors = Validate.reigster(this.state);
+    if (errors.length !== 0) {
+      console.log('バリデーションエラーのため更新しません')
+      console.log(errors);
+      alert(JSON.stringify(errors));
+      return
+    }
+    console.log('完了処理開始');
+    this.props.update(this.state);
+  }
+
   handleToTaskList = () => {
     this.props.history.push('/')
   }
@@ -85,6 +120,9 @@ class TaskDetail extends Component {
       <div className="add-task-main">
         <table className="add-task-table">
           <tbody>
+            <tr>
+              <td>{this.state.taskState}</td>
+            </tr>
             <tr>
               <td><TextField required label="タスク名" value={this.state.taskName} onChange={this.handleChangeState('taskName')}></TextField></td>
             </tr>
@@ -138,9 +176,18 @@ class TaskDetail extends Component {
         <Button variant="contained" color="primary" onClick={this.handleUpdateTask}>
           更新
         </Button>
-        <Button variant="contained" color="primary" onClick={this.handleToTaskList}>
+        {
+          this.state.taskState === 0 &&
+          <Button variant="contained" color="primary" onClick={this.toDoneState}>
           完了
-        </Button>
+          </Button>
+        }
+        {
+          this.state.taskState === 9 &&
+          <Button variant="contained" color="primary" onClick={this.toDoState}>
+          再オープン
+          </Button>
+        }
         <Button variant="contained" color="primary" onClick={this.handleToTaskList}>
           一覧へ戻る
         </Button>

@@ -1,7 +1,13 @@
-import { createStore } from 'redux'
+import axios from 'axios'
+
+// 初期state変数（initialState）の作成
+const initialTaskState = {
+  taskList: [],
+  doneTaskList: []
+}
 
 const SET_TASK_LIST = 'setTaskList'
-const SET_DONE_TASK_LIST = 'seTdoneTaskList'
+const SET_DONE_TASK_LIST = 'setDoneTaskList'
 
 export function setTaskList(taskList) {
   return {
@@ -17,44 +23,46 @@ export function setDoneTaskList(doneTaskList) {
   }
 }
 
-function taskInfoState(state, action) {
-  console.log('taskInfoState');
-  console.log('action[' + JSON.stringify(action) + ']');
-  console.log('state[' + JSON.stringify(state) + ']');
+export function taskInfoStateReducer(state = initialTaskState, action) {
   switch (action.type) {
     case SET_TASK_LIST:
-      return {taskList: action.taskList}
+      return {
+        taskList: action.taskList,
+        doneTaskList: state.doneTaskList
+      }
     case SET_DONE_TASK_LIST:
-        return {doneTaskList: action.doneTaskList}
+        return {
+          taskList: state.taskList,
+          doneTaskList: action.doneTaskList
+        }
     default:
       return state
   }
 }
 
-/* Storeの実装 */
+/* middleware実装 */
+export const fetchTaskList = () => {
+  return (dispatch) => {
+    return axios.get(`http://localhost:8080/api/task/get`).then(results => {
+      console.log('results[' + JSON.stringify(results) + ']');
+      dispatch(setTaskList(results.data))
+    }).catch(err => {
+      console.error('error[' + err + ']')
+      // エラーの場合は空配列を設定
+      dispatch(setTaskList([]))
+    });
+  }
+}
 
-// 初期state変数（initialState）の作成
-const initialState = {
-  taskList: [{
-    taskId: '1',
-    taskName: 'テスト用タスク１',
-    genre: 'ジャンル１',
-    priority: 'high',
-    period_date: '2019/4/30'
-  },{
-    taskId: '2',
-    taskName: 'テスト用タスク2',
-    genre: 'ジャンル2',
-    priority: 'mid',
-    period_date: '2019/4/29'
-  },{
-    taskId: '3',
-    taskName: 'テスト用タスク3',
-    genre: 'ジャンル3',
-    priority: 'low',
-    period_date: '2019/5/1'
-  }],
-  doneTaskList: []
-};
-// createStore（）メソッドを使ってStoreの作成
-export const store = createStore(commonState, initialState);
+export const fetchDoneTaskList = () => {
+  return (dispatch) => {
+    return axios.get(`http://localhost:8080/api/donetask/get`).then(results => {
+      console.log('results[' + JSON.stringify(results) + ']');
+      dispatch(setDoneTaskList(results.data))
+    }).catch(err => {
+      console.error('error[' + err + ']')
+      // エラーの場合は空配列を設定
+      dispatch(setDoneTaskList([]))
+    });
+  }
+}

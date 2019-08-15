@@ -1,4 +1,5 @@
-import { setHeaderTitle, fetchTaskList } from './index.js'
+import { setHeaderTitle } from './index.js'
+import { fetchTaskList, fetchDoneTaskList } from './taskInfo'
 import { setInputData, registerTask } from './addTask'
 import { getTaskDetailById, updateDetailById, setTaskDetail } from './taskDetail'
 
@@ -12,7 +13,11 @@ export class ActionClass {
   fetchTask(): Promise<void> {
     this.dispatch(fetchTaskList());
   };
-  
+
+  fetchDoneTask(): Promise<void> {
+    this.dispatch(fetchDoneTaskList());
+  };
+
   setTitle(value) {
     this.dispatch(setHeaderTitle(value));
   };
