@@ -9,7 +9,7 @@ class TaskItems extends Component {
     this.props.history.push('/taskdetail/' + taskId);
   }
   render() {
-    if (!this.props.list) {
+    if (this.props.list.length === 0) {
       return (<div>未完了のタスクがありません。</div>)
     }
     let items = this.props.list.map((task, index) =>

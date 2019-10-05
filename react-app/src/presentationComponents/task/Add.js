@@ -18,12 +18,13 @@ import './../../task/task.css';
 //   }
 // }))
 
-var errors = [];
+var errorMessage = '';
 
 class AddTask extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      errorMsg: {},
       taskName:'',
       periodeDateYear: '',
       periodeDateMonth: '',
@@ -44,13 +45,28 @@ class AddTask extends Component {
   }
 
   handleRegisterTask = () => {
+    this.setState({errorMsg: []});
     console.log('this.state [' + JSON.stringify(this.state) + ']');
     this.props.setPostData(this.state);
-    errors = [];
+    let errors = [];
     errors = Validate.reigster(this.state);
     if (errors.length !== 0) {
       console.log('バリデーションエラーのため登録しません')
       console.log(errors)
+      errorMessage = '';
+      this.buildErrorMessage(errors)
+      console.log('errorMessage:' + errorMessage)
+      // let messages = [];
+      // for(let i = 0; i<errors.length; i++) {
+      //   messages.push(errors[i].message);
+      // }
+      this.setState({errorMsg: errors});
+      // console.log(JSON.stringify(this.state))
+      // alert(() => {
+      //   for(let i; i<errors.length; i++) {
+      //     return errors[i].message
+      //   }
+      // })
       return
     }
     console.log('登録処理開始')
@@ -62,6 +78,13 @@ class AddTask extends Component {
   }
   handleChangeState = key => event => {
     this.setState({[key]: event.target.value});
+  }
+
+  buildErrorMessage = (errors) => {
+    errorMessage = errors.reduce((accumulator, errorInfo) => {
+      accumulator = accumulator + errorInfo.message + '/'
+      return accumulator
+    }, '')
   }
 
   render() {
@@ -91,14 +114,14 @@ class AddTask extends Component {
         <em>{priority.label}</em>
       </MenuItem>
     );
-    let errorsMsg = errors.map((error, index) => 
-      <div>error.message</div>
-    );
     
     return (
       <div className="add-task-main">
         <table className="add-task-table">
           <tbody>
+            <tr>
+              <td><div className="error-message">{errorMessage === '' ? '': errorMessage}</div></td>
+            </tr>
             <tr>
               <td><TextField required label="タスク名" value={this.state.taskName} onChange={this.handleChangeState('taskName')}></TextField></td>
             </tr>
@@ -145,7 +168,7 @@ class AddTask extends Component {
               </td>
             </tr>
             <tr>
-              <td><TextField label="メモ" multiline rowsMax="4" value={this.state.memo} onChange={this.handleChangeState('memo')}></TextField></td>
+              <td><TextField label="メモ" multiline className="task-memo-field" rowsMax="10" value={this.state.memo} onChange={this.handleChangeState('memo')}></TextField></td>
             </tr>
           </tbody>
         </table>

@@ -10,12 +10,13 @@ import {Validate} from '../../logic/validation'
 import {CONST} from '../../assets/const'
 import './../../task/task.css';
 
-var errors = [];
+var errorMessage = '';
 
 class TaskDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      errorMsg: {},
       taskId: '',
       taskState: '',
       taskName:'',
@@ -27,6 +28,7 @@ class TaskDetail extends Component {
       memo: ''
     }
   }
+
   async componentDidMount () {
     this.props.set('タスク詳細');
     await this.props.getTaskDetail(this.props.match.params.id);
@@ -34,58 +36,66 @@ class TaskDetail extends Component {
   }
 
   handleUpdateTask = () => {
-    errors = [];
+    this.setState({errorMsg: []});
+    let errors = [];
     errors = Validate.reigster(this.state);
     if (errors.length !== 0) {
-      console.log('バリデーションエラーのため更新しません')
+      console.log('更新処理 バリデーションエラーのため更新しません')
       console.log(errors);
-      alert(JSON.stringify(errors));
+      this.buildErrorMessage(errors)
+      this.setState({errorMsg: errors});
       return
     }
     this.props.update(this.state);
   }
 
   toDoneState = async () =>{
-    console.log('タスク完了')
-
+    this.setState({errorMsg: []});
     // stateを変更
     await this.setState({taskState: 9});
 
-    errors = [];
+    let errors = [];
     errors = Validate.reigster(this.state);
     if (errors.length !== 0) {
-      console.log('バリデーションエラーのため更新しません')
+      console.log('完了処理 バリデーションエラーのため更新しません')
       console.log(errors);
-      alert(JSON.stringify(errors));
+      this.buildErrorMessage(errors)
+      this.setState({errorMsg: errors});
       return
     }
-    console.log('完了処理開始');
     this.props.update(this.state);
   }
 
   toDoState = async () =>{
-    console.log('タスク完了')
-
+    this.setState({errorMsg: []});
     // stateを変更
     await this.setState({taskState: 0});
 
-    errors = [];
+    let errors = [];
     errors = Validate.reigster(this.state);
     if (errors.length !== 0) {
-      console.log('バリデーションエラーのため更新しません')
+      this.buildErrorMessage(errors)
+      console.log('再オープン処理 バリデーションエラーのため更新しません')
       console.log(errors);
-      alert(JSON.stringify(errors));
+      this.setState({errorMsg: errors});
       return
     }
-    console.log('完了処理開始');
     this.props.update(this.state);
   }
 
   handleToTaskList = () => {
     this.props.history.push('/')
   }
+
   handleChangeState = key => event => {
     this.setState({[key]: event.target.value});
+  }
+
+  buildErrorMessage = (errors) => {
+    errorMessage = errors.reduce((accumulator, errorInfo) => {
+      accumulator = accumulator + errorInfo.message + '/'
+      return accumulator
+    }, '')
   }
 
   render() {
@@ -121,7 +131,7 @@ class TaskDetail extends Component {
         <table className="add-task-table">
           <tbody>
             <tr>
-              <td>{this.state.taskState}</td>
+              <td><div className="error-message">{errorMessage === '' ? '': errorMessage}</div></td>
             </tr>
             <tr>
               <td><TextField required label="タスク名" value={this.state.taskName} onChange={this.handleChangeState('taskName')}></TextField></td>
@@ -169,7 +179,7 @@ class TaskDetail extends Component {
               </td>
             </tr>
             <tr>
-              <td><TextField label="メモ" multiline rowsMax="4" value={this.state.memo} onChange={this.handleChangeState('memo')}></TextField></td>
+              <td><TextField label="メモ" multiline rowsMax="10" value={this.state.memo} onChange={this.handleChangeState('memo')}></TextField></td>
             </tr>
           </tbody>
         </table>
@@ -188,9 +198,6 @@ class TaskDetail extends Component {
           再オープン
           </Button>
         }
-        <Button variant="contained" color="primary" onClick={this.handleToTaskList}>
-          一覧へ戻る
-        </Button>
       </div>
     );
   }

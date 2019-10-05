@@ -1,13 +1,20 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router';
 import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
-const options = [
-  'タスク一覧',
-  'Doneタスク一覧',
-  'タスク追加'
+const options = [{
+    label: 'タスク一覧',
+    path: '/'
+  }, {
+    label: '完了タスク一覧',
+    path: '/donetask'
+  }, {
+    label: 'タスク追加',
+    path: '/addtask'
+  }
 ];
 
 const ITEM_HEIGHT = 48;
@@ -21,9 +28,13 @@ class Burger extends Component {
     this.setState({ anchorEl: event.currentTarget });
   };
 
+  handleToPath = (path) => {
+    this.props.history.push(path)
+    this.setState({ anchorEl: null });
+  };
+
   handleClose = () => {
     this.setState({ anchorEl: null });
-    
   };
 
   render() {
@@ -53,8 +64,8 @@ class Burger extends Component {
           }}
         >
           {options.map(option => (
-            <MenuItem key={option} selected={option === 'Pyxis'} onClick={this.handleClose}>
-              {option}
+            <MenuItem key={option.label} selected={option.label === 'Pyxis'} onClick={ () => this.handleToPath(option.path) }>
+              {option.label}
             </MenuItem>
           ))}
         </Menu>
@@ -63,4 +74,4 @@ class Burger extends Component {
   }
 }
 
-export default Burger
+export default withRouter(Burger)

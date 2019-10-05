@@ -27,9 +27,6 @@ class TaskList extends Component {
           <Button variant="contained" color="primary" onClick={this.handleToAboutPage}>
             タスク追加
           </Button>
-          <Button variant="contained" color="primary" onClick={this.handleToDoneTaskPage}>
-            完了タスク一覧
-          </Button>
         </div>
       </div>
     );
