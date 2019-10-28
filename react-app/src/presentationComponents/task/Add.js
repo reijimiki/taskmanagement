@@ -69,6 +69,7 @@ class AddTask extends Component {
       // })
       return
     }
+    this.setState({errorMsg: errors});
     console.log('登録処理開始')
     this.props.register(this.state);
     // this.props.history.push('/')
