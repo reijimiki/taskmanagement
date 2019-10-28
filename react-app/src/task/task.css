@@ -1,0 +1,33 @@
+.header-main {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.header-parts {
+  width: 100%;
+}
+
+.header-parts__left {
+  width: 20%;
+}
+
+.header-parts__center {
+  width: 60%;
+  text-align: center;
+}
+
+.header-parts__right {
+  width: 20%;
+  text-align: center;
+}
+
+.add-task-table {
+  width: 100%;
+}
+
+.add-task-td-genre {
+  min-width: 120px !important;
+}
+.add-task-td-priority {
+  min-width: 120px !important;
+}

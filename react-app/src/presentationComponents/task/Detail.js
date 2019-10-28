@@ -1,0 +1,206 @@
+import React, { Component } from 'react';
+import { withRouter } from 'react-router';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import Select from '@material-ui/core/Select';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import {Validate} from '../../logic/validation'
+import {CONST} from '../../assets/const'
+import './../../task/task.css';
+
+var errorMessage = '';
+
+class TaskDetail extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      errorMsg: {},
+      taskId: '',
+      taskState: '',
+      taskName:'',
+      periodeDateYear: '',
+      periodeDateMonth: '',
+      periodeDateDay: '',
+      genre: '',
+      priority: '',
+      memo: ''
+    }
+  }
+
+  async componentDidMount () {
+    this.props.set('タスク詳細');
+    await this.props.getTaskDetail(this.props.match.params.id);
+    this.setState(this.props.taskDetail);    
+  }
+
+  handleUpdateTask = () => {
+    this.setState({errorMsg: []});
+    let errors = [];
+    errors = Validate.reigster(this.state);
+    if (errors.length !== 0) {
+      console.log('更新処理 バリデーションエラーのため更新しません')
+      console.log(errors);
+      this.buildErrorMessage(errors)
+      this.setState({errorMsg: errors});
+      return
+    }
+    this.props.update(this.state);
+  }
+
+  toDoneState = async () =>{
+    this.setState({errorMsg: []});
+    // stateを変更
+    await this.setState({taskState: 9});
+
+    let errors = [];
+    errors = Validate.reigster(this.state);
+    if (errors.length !== 0) {
+      console.log('完了処理 バリデーションエラーのため更新しません')
+      console.log(errors);
+      this.buildErrorMessage(errors)
+      this.setState({errorMsg: errors});
+      return
+    }
+    this.props.update(this.state);
+  }
+
+  toDoState = async () =>{
+    this.setState({errorMsg: []});
+    // stateを変更
+    await this.setState({taskState: 0});
+
+    let errors = [];
+    errors = Validate.reigster(this.state);
+    if (errors.length !== 0) {
+      this.buildErrorMessage(errors)
+      console.log('再オープン処理 バリデーションエラーのため更新しません')
+      console.log(errors);
+      this.setState({errorMsg: errors});
+      return
+    }
+    this.props.update(this.state);
+  }
+
+  handleToTaskList = () => {
+    this.props.history.push('/')
+  }
+
+  handleChangeState = key => event => {
+    this.setState({[key]: event.target.value});
+  }
+
+  buildErrorMessage = (errors) => {
+    errorMessage = errors.reduce((accumulator, errorInfo) => {
+      accumulator = accumulator + errorInfo.message + '/'
+      return accumulator
+    }, '')
+  }
+
+  render() {
+    // const classes = useStyles();
+    let dateYear = CONST.DATE.YEAR.map((year, index) => 
+      <MenuItem value={year} key={index}>
+        <em>{year}</em>
+      </MenuItem>
+    );
+    let dateMonth = CONST.DATE.MONTH.map((month, index) => 
+      <MenuItem value={month} key={index}>
+        <em>{month}</em>
+      </MenuItem>
+    );
+    let dateDay = CONST.DATE.DAY.map((day, index) => 
+      <MenuItem value={day} key={index}>
+        <em>{day}</em>
+      </MenuItem>
+    );
+    let genre = CONST.GENRE.map((genre, index) => 
+      <MenuItem value={genre.value} key={index}>
+        <em>{genre.label}</em>
+      </MenuItem>
+    );
+    let priority = CONST.PRIORITY.map((priority, index) => 
+      <MenuItem value={priority.value} key={index}>
+        <em>{priority.label}</em>
+      </MenuItem>
+    );
+    
+    return (
+      <div className="add-task-main">
+        <table className="add-task-table">
+          <tbody>
+            <tr>
+              <td><div className="error-message">{errorMessage === '' ? '': errorMessage}</div></td>
+            </tr>
+            <tr>
+              <td><TextField required label="タスク名" value={this.state.taskName} onChange={this.handleChangeState('taskName')}></TextField></td>
+            </tr>
+            <tr>
+              <td>
+                <FormControl>
+                  <InputLabel>期限</InputLabel>
+                  <Select value={this.state.periodeDateYear} onChange={this.handleChangeState('periodeDateYear')}>
+                    {dateYear}
+                  </Select>
+                </FormControl>
+                <FormControl>
+                  <InputLabel>月</InputLabel>
+                  <Select value={this.state.periodeDateMonth} onChange={this.handleChangeState('periodeDateMonth')}>
+                    {dateMonth}
+                  </Select>
+                </FormControl>
+                <FormControl>
+                  <InputLabel>日</InputLabel>
+                  <Select value={this.state.periodeDateDay} onChange={this.handleChangeState('periodeDateDay')}>
+                    {dateDay}
+                  </Select>
+                </FormControl>
+              </td>
+            </tr>
+            <tr>
+              <td>
+              <FormControl className="add-task-td-genre">
+                <InputLabel>ジャンル</InputLabel>
+                <Select value={this.state.genre} onChange={this.handleChangeState('genre')}>
+                  {genre}
+                </Select>
+              </FormControl>
+              </td>
+            </tr>
+            <tr>
+              <td>
+              <FormControl className="add-task-td-priority">
+                <InputLabel>優先度</InputLabel>
+                <Select value={this.state.priority} onChange={this.handleChangeState('priority')}>
+                  {priority}
+                </Select>
+              </FormControl>
+              </td>
+            </tr>
+            <tr>
+              <td><TextField label="メモ" multiline rowsMax="10" value={this.state.memo} onChange={this.handleChangeState('memo')}></TextField></td>
+            </tr>
+          </tbody>
+        </table>
+        <Button variant="contained" color="primary" onClick={this.handleUpdateTask}>
+          更新
+        </Button>
+        {
+          this.state.taskState === 0 &&
+          <Button variant="contained" color="primary" onClick={this.toDoneState}>
+          完了
+          </Button>
+        }
+        {
+          this.state.taskState === 9 &&
+          <Button variant="contained" color="primary" onClick={this.toDoState}>
+          再オープン
+          </Button>
+        }
+      </div>
+    );
+  }
+}
+
+export default withRouter(TaskDetail);
